@@ -14,7 +14,8 @@ Module caesar
             Console.Write("Usage: caesar.exe [-c | -a | -u] ciphered_text_file" & vbCrLf & _
                           "       -c output_file 0-26             Apply cipher" & vbCrLf & _
                           "       -a ciphered_file                Analyze file" & vbCrLf & _
-                          "       -u ciphered_file 0-26          Uncipher file")
+                          "       -u ciphered_file 0-26          Uncipher file" & vbCrLf & _
+                          "       --auto ciphered_file       Autouncipher file")
 
         ElseIf My.Application.CommandLineArgs.Count <= 3 Then
 
@@ -31,7 +32,7 @@ Module caesar
                         Console.Write("It is necessary a number between 1 and 26 to cipher the text.")
 
                     ElseIf Not IO.File.Exists(My.Application.CommandLineArgs(1)) Then
-                        Console.Write("The file " & My.Application.CommandLineArgs(1) & " doesn't exists.")
+                        Console.WriteLine("The file " & My.Application.CommandLineArgs(1) & " doesn't exists.")
 
                     Else
 
@@ -39,9 +40,9 @@ Module caesar
                         key = My.Application.CommandLineArgs(2)
 
                         If cipher(file, key, file & "_ciphered") Then
-                            Console.Write("File " & file & "_ciphered generated successfuly.")
+                            Console.WriteLine("File " & file & "_ciphered generated successfuly.")
                         Else
-                            Console.Write("The process has not been successful.")
+                            Console.WriteLine("The process has not been successful.")
                         End If
 
                     End If
@@ -49,28 +50,54 @@ Module caesar
                 Case "-a"
 
                     If Not IO.File.Exists(My.Application.CommandLineArgs(1)) Then
-                        Console.Write("The file " & My.Application.CommandLineArgs(1) & " doesn't exists.")
+                        Console.WriteLine("The file " & My.Application.CommandLineArgs(1) & " doesn't exists.")
 
                     Else
 
                         file = My.Application.CommandLineArgs(1)
 
                         If analyze(file) Then
-                            Console.Write("Analysis succeeded.")
+                            Console.WriteLine("Analysis succeeded.")
                         Else
-                            Console.Write("The process has not been successful.")
+                            Console.WriteLine("The process has not been successful.")
                         End If
                     End If
+
+                Case "--auto"
+
+                    If Not IO.File.Exists(My.Application.CommandLineArgs(1)) Then
+                        Console.WriteLine("The file " & My.Application.CommandLineArgs(1) & " doesn't exists.")
+
+                    Else
+
+                        file = My.Application.CommandLineArgs(1)
+
+                        key = analyze(file)
+
+                        If key Then
+                            Console.WriteLine("Analysis succeeded, running next step: deciphering.")
+
+                            If cipher(file, 26 - key, file & "_unciphered") Then
+                                Console.WriteLine("File " & file & "_unciphered generated successfuly.")
+                            Else
+                                Console.WriteLine("The process has not been successful.")
+                            End If
+
+                        Else
+                            Console.WriteLine("The analysis result doesn't permit run the deciphering process.")
+                        End If
+                    End If
+
                 Case "-u"
 
                     If My.Application.CommandLineArgs.Count <> 3 Or _
                         My.Application.CommandLineArgs(2) < 1 Or _
                         My.Application.CommandLineArgs(2) > 26 Then
 
-                        Console.Write("It is necessary a number between 1 and 26 to uncipher the text.")
+                        Console.WriteLine("It is necessary a number between 1 and 26 to uncipher the text.")
 
                     ElseIf Not IO.File.Exists(My.Application.CommandLineArgs(1)) Then
-                        Console.Write("The file " & My.Application.CommandLineArgs(1) & " doesn't exists.")
+                        Console.WriteLine("The file " & My.Application.CommandLineArgs(1) & " doesn't exists.")
 
                     Else
 
@@ -78,9 +105,9 @@ Module caesar
                         key = 26 - My.Application.CommandLineArgs(2)
 
                         If cipher(file, key, file & "_unciphered") Then
-                            Console.Write("File " & file & "_unciphered generated successfuly.")
+                            Console.WriteLine("File " & file & "_unciphered generated successfuly.")
                         Else
-                            Console.Write("The process has not been successful.")
+                            Console.WriteLine("The process has not been successful.")
                         End If
 
                     End If
@@ -126,13 +153,14 @@ Module caesar
 
     End Function
 
-    Function analyze(ByVal file As String) As Boolean
+    Function analyze(ByVal file As String) As Integer
         Dim alphabet As String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         Dim sr As New IO.StreamReader(file)
         Dim matches(alphabet.Length) As Integer
         Dim curChar As Char = ""
         Dim highest As Integer = 0
         Dim highPos As Integer = 0
+        Dim total As Integer = 0
 
         While Not sr.EndOfStream
             curChar = Chr(sr.Read).ToString.ToUpper
@@ -141,6 +169,10 @@ Module caesar
 
         End While
 
+        For Each match In matches
+            total += match
+        Next
+
         For i = 0 To alphabet.Length - 1
 
             If matches(i) > highest Then
@@ -148,7 +180,7 @@ Module caesar
                 highest = matches(i)
             End If
 
-            Console.WriteLine("Letter " & Mid(alphabet, i + 1, 1) & " whith " & matches(i) & " matches.")
+            Console.WriteLine("Letter " & Mid(alphabet, i + 1, 1) & " whith " & matches(i) & " matches with " & ((100 / total) * matches(i)).ToString("0.0") & "%.")
 
         Next
 
@@ -158,13 +190,14 @@ Module caesar
 
         If highPos + 1 > 5 Then
             Console.WriteLine("The key might be " & highPos + 1 - 5)
+            Return highPos + 1 - 5
         ElseIf highPos + 1 < 5 Then
             Console.WriteLine("The key might be " & 26 - (5 - (highPos + 1)))
+            Return 26 - (5 - (highPos + 1))
         Else
             Console.WriteLine("The file might not be ciphered.")
+            Return 0
         End If
-
-        Return True
 
     End Function
 End Module
