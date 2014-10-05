@@ -9,7 +9,7 @@ if (( $# != 3 )); then
 	exit 5
 fi
 
-if ( ! $( echo $w | grep '^[a-z,A-Z]*$' > /dev/null ) );then
+if ( ! $( echo $w | grep '^[a-z,A-Z,0-9]*$' > /dev/null ) );then
 	echo "La passphrase sólo puede tener carácteres alfabéticos."
 	exit 2
 fi
