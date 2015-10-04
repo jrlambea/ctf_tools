@@ -12,6 +12,7 @@ Collection of tools intended to the research and exploit of vulnerabilities or i
 #### Analysis
 
 * Character frequency
+* Enumerate letter frequency by language
 
 #### Substitution
 
