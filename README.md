@@ -1,5 +1,16 @@
-classic_crypto_tools
-====================
+# CTF_Tools
+
+Collection of tools intended to the research and exploit of vulnerabilities or information gathering.
+
+## Crypto
+
+### Classic
+
+#### Substitution
+
+* Caesar cipher
+
+#### Transposition
 
 Código para ejecutar los sistemas clásicos de cifrado y encriptación.
 
@@ -8,6 +19,8 @@ Código para ejecutar los sistemas clásicos de cifrado y encriptación.
 3. Columnar transposition with key.
 4. 
 
-Bibliografía
-============
-Applied Cryptanalysis - Breaking Ciphers in the Real World. 
+# Bibliografía
+
+Applied Cryptanalysis - Breaking Ciphers in the Real World.
+
+[Cifrado de las comunicaciones digitales, de la cifra clásica al algoritmo RSA](http://0xword.com/es/libros/36-libro-cifrado-comunicaciones-rsa.html)
