@@ -2,9 +2,16 @@
 
 Collection of tools intended to the research and exploit of vulnerabilities or information gathering.
 
+##Requirements
+
+* Python 3 🐍
+
 ## Crypto
 
 ### Classic
+### Analysis
+
+* Character frequency
 
 #### Substitution
 
