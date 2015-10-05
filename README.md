@@ -17,6 +17,7 @@ Collection of tools intended to the research and exploit of vulnerabilities or i
 #### Substitution
 
 * Caesar cipher
+* Vigenère
 
 #### Transposition
 * Block transposition
